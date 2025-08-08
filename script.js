@@ -1,122 +1,112 @@
-const video = document.getElementById('video');
-const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
+const video = document.getElementById("video");
+const snapBtn = document.getElementById("snapBtn");
+const cameraBtn = document.getElementById("cameraBtn");
+const uploadInput = document.getElementById("uploadInput");
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+const downloadBtn = document.getElementById("downloadBtn");
 
-const startCameraBtn = document.getElementById('startCamera');
-const uploadImage = document.getElementById('uploadImage');
-const captureBtn = document.getElementById('captureBtn');
-const retakeBtn = document.getElementById('retakeBtn');
-const downloadBtn = document.getElementById('downloadBtn');
-
-let stream;
+let image = new Image();
 
 // Start camera
-startCameraBtn.onclick = async () => {
+cameraBtn.addEventListener("click", async () => {
     try {
-        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
         video.srcObject = stream;
-        video.style.display = 'block';
-        captureBtn.style.display = 'inline-block';
+        video.style.display = "block";
+        snapBtn.style.display = "inline-block";
     } catch (err) {
-        alert('Camera access denied or unavailable.');
+        alert("Camera access denied!");
     }
-};
+});
 
-// Capture image from camera
-captureBtn.onclick = () => {
+// Take snapshot
+snapBtn.addEventListener("click", () => {
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
     ctx.drawImage(video, 0, 0);
-    stopCamera();
-    labelColors();
-};
+    processImage();
+});
 
-// Upload image from device
-uploadImage.onchange = (e) => {
+// Upload image
+uploadInput.addEventListener("change", (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    const img = new Image();
-    img.onload = () => {
-        canvas.width = img.width;
-        canvas.height = img.height;
-        ctx.drawImage(img, 0, 0);
-        labelColors();
+    const reader = new FileReader();
+    reader.onload = () => {
+        image.onload = () => {
+            canvas.width = image.width;
+            canvas.height = image.height;
+            ctx.drawImage(image, 0, 0);
+            processImage();
+        };
+        image.src = reader.result;
     };
-    img.src = URL.createObjectURL(file);
-    canvas.style.display = 'block';
-};
+    reader.readAsDataURL(file);
+});
 
-// Stop camera
-function stopCamera() {
-    if (stream) {
-        stream.getTracks().forEach(track => track.stop());
+function processImage() {
+    const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const pixels = imgData.data;
+    const colorMap = {};
+
+    for (let i = 0; i < pixels.length; i += 4) {
+        const r = pixels[i];
+        const g = pixels[i + 1];
+        const b = pixels[i + 2];
+        const rgb = `rgb(${r},${g},${b})`;
+        colorMap[rgb] = colorMap[rgb] || { count: 0, coords: [] };
+        if (colorMap[rgb].coords.length < 3) {
+            let x = (i / 4) % canvas.width;
+            let y = Math.floor(i / 4 / canvas.width);
+            colorMap[rgb].coords.push({ x, y });
+        }
+        colorMap[rgb].count++;
     }
-    video.style.display = 'none';
-    canvas.style.display = 'block';
-    captureBtn.style.display = 'none';
+
+    // Draw labels
+    Object.keys(colorMap).forEach((color) => {
+        colorMap[color].coords.forEach(({ x, y }) => {
+            drawLabel(x, y, color);
+        });
+    });
+
+    downloadBtn.disabled = false;
 }
 
-// Retake / Upload again
-retakeBtn.onclick = () => {
-    canvas.style.display = 'none';
-    video.style.display = 'none';
-    captureBtn.style.display = 'none';
-};
+// Draw label with background and arrow
+function drawLabel(x, y, color) {
+    const textColor = getContrastYIQ(color);
+    ctx.font = "12px Arial";
+    ctx.fillStyle = color;
+    const textWidth = ctx.measureText(color).width + 12;
+
+    ctx.beginPath();
+    ctx.rect(x, y - 20, textWidth, 16);
+    ctx.fill();
+
+    ctx.fillStyle = textColor;
+    ctx.fillText(color, x + 6, y - 8);
+
+    // Draw arrow line
+    ctx.strokeStyle = color;
+    ctx.beginPath();
+    ctx.moveTo(x + textWidth / 2, y - 4);
+    ctx.lineTo(x, y);
+    ctx.stroke();
+}
+
+// Contrast-aware text color
+function getContrastYIQ(rgb) {
+    const [r, g, b] = rgb.match(/\d+/g).map(Number);
+    const yiq = (r*299 + g*587 + b*114) / 1000;
+    return (yiq >= 128) ? 'black' : 'white';
+}
 
 // Download labeled image
-downloadBtn.onclick = () => {
-    const link = document.createElement('a');
-    link.download = 'labeled_image.png';
+downloadBtn.addEventListener("click", () => {
+    const link = document.createElement("a");
+    link.download = "labeled_image.png";
     link.href = canvas.toDataURL();
     link.click();
-};
-
-// Label colors in image
-function labelColors() {
-    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-
-    let colors = {};
-    for (let i = 0; i < imageData.length; i += 4 * 50) { // skip some pixels for speed
-        const r = imageData[i];
-        const g = imageData[i + 1];
-        const b = imageData[i + 2];
-        const name = getColorName(r, g, b);
-        colors[name] = { r, g, b };
-    }
-
-    Object.entries(colors).forEach(([name]) => {
-        const x = Math.random() * canvas.width;
-        const y = Math.random() * canvas.height;
-        ctx.fillStyle = 'white';
-        ctx.fillRect(x, y, ctx.measureText(name).width + 6, 16);
-        ctx.fillStyle = 'black';
-        ctx.fillText(name, x + 3, y + 12);
-    });
-}
-
-// Basic color name function
-function getColorName(r, g, b) {
-    const colorNames = {
-        'Red': [255, 0, 0],
-        'Green': [0, 128, 0],
-        'Blue': [0, 0, 255],
-        'Yellow': [255, 255, 0],
-        'Orange': [255, 165, 0],
-        'Purple': [128, 0, 128],
-        'Pink': [255, 192, 203],
-        'Black': [0, 0, 0],
-        'White': [255, 255, 255],
-        'Gray': [128, 128, 128],
-        'Brown': [165, 42, 42]
-    };
-    let closest = 'Unknown';
-    let minDist = Infinity;
-    for (let [name, rgb] of Object.entries(colorNames)) {
-        const dist = Math.sqrt((r - rgb[0]) ** 2 + (g - rgb[1]) ** 2 + (b - rgb[2]) ** 2);
-        if (dist < minDist) {
-            minDist = dist;
-            closest = name;
-        }
-    }
-    return closest;
-}
+});
