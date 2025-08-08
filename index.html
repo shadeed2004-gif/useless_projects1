@@ -3,23 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Color Labeler</title>
+    <title>Analog to Digital Clock</title>
     <link rel="stylesheet" href="style.css">
+    <script async src="https://docs.opencv.org/4.8.0/opencv.js"></script>
 </head>
 <body>
-    <h1>🎨 Color Labeling Website</h1>
+    <main>
+        <h1>Analog → Digital Clock Reader</h1>
 
-    <div class="controls">
-        <video id="video" autoplay></video>
-        <button id="captureBtn">📸 Capture Photo</button>
-        <input type="file" id="upload" accept="image/*">
-    </div>
+        <div class="controls">
+            <video id="video" autoplay playsinline></video>
+            <canvas id="canvas" style="display:none"></canvas>
 
-    <canvas id="canvas"></canvas>
-    <div id="output"></div>
+            <div class="buttons">
+                <button id="startCam">Start Camera</button>
+                <button id="capture">Capture Photo</button>
+                <input id="fileInput" type="file" accept="image/*">
+            </div>
+        </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/color-thief-browser/dist/color-thief.umd.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/color-namer@1.3.0/dist/color-namer.min.js"></script>
+        <div class="preview">
+            <img id="previewImg" alt="preview">
+        </div>
+
+        <div class="result">
+            <h2>Detected Time</h2>
+            <div id="timeOutput">—</div>
+            <div id="debugMsg" class="debug"></div>
+        </div>
+    </main>
+
     <script src="script.js"></script>
 </body>
 </html>
