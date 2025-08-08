@@ -1,25 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painting Color Labeler</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Color Labeling Camera</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Painting Color Labeler 🎨</h1>
 
-    <div class="controls">
-        <button id="cameraBtn">📷 Capture from Camera</button>
-        <input type="file" id="uploadInput" accept="image/*">
-        <button id="downloadBtn" disabled>💾 Download Labeled Image</button>
-    </div>
+<h1>🎨 Color Labeling Camera</h1>
 
-    <video id="video" autoplay playsinline></video>
-    <button id="snapBtn" style="display:none;">Snap Photo</button>
+<video id="video" width="400" height="300" autoplay></video><br>
+<button id="capture">📸 Snap Photo</button>
+<input type="file" id="upload" accept="image/*"><br>
+<canvas id="canvas" width="400" height="300"></canvas>
 
-    <canvas id="canvas"></canvas>
-
-    <script src="script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/color-thief-browser/dist/color-thief.umd.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
