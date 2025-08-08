@@ -1,62 +1,14 @@
-:root {
-    font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-}
-body {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    background: #f7f7f8;
-    margin: 0;
-}
-main {
-    width: 980px;
-    max-width: 95%;
-    background: white;
-    padding: 18px;
-    border-radius: 12px;
-    box-shadow: 0 6px 24px rgba(0,0,0,0.08);
-}
-h1 {
-    margin-top: 0;
-}
-.controls {
-    display: flex;
-    gap: 16px;
-    align-items: flex-start;
-}
-video {
-    width: 360px;
-    height: auto;
-    background: #000;
-    border-radius: 8px;
-}
-.preview img {
-    max-width: 320px;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-}
-.buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-left: 8px;
-}
-button {
-    padding: 10px 12px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    background: #fff;
-    cursor: pointer;
-}
-.result {
-    margin-top: 12px;
-}
-#timeOutput {
-    font-size: 28px;
-    font-weight: 700;
-}
-.debug {
-    color: #b33;
-    margin-top: 8px;
-}
+:root{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
+body{display:flex;align-items:center;justify-content:center;min-height:100vh;background:#f7f7f8;margin:0}
+main{width:980px;max-width:95%;background:white;padding:18px;border-radius:12px;box-shadow:0 6px 24px rgba(0,0,0,0.08)}
+h1{margin-top:0}
+.controls{display:flex;gap:16px;align-items:flex-start}
+video{width:360px;height:auto;background:#000;border-radius:8px}
+.preview{position:relative;display:inline-block;margin-top:12px}
+#previewCanvas{max-width:320px;border-radius:8px;border:1px solid #ddd;display:block}
+.overlay{position:absolute;left:0;top:0;pointer-events:none;border-radius:8px}
+.buttons{display:flex;flex-direction:column;gap:8px;margin-left:8px}
+button{padding:10px 12px;border-radius:8px;border:1px solid #ccc;background:#fff;cursor:pointer}
+.result{margin-top:12px}
+#timeOutput{font-size:28px;font-weight:700}
+.debug{color:#b33;margin-top:8px}

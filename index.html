@@ -1,38 +1,43 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analog to Digital Clock</title>
-    <link rel="stylesheet" href="style.css">
-    <script async src="https://docs.opencv.org/4.8.0/opencv.js"></script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Analog → Digital Clock Reader (Frontend-only)</title>
+  <link rel="stylesheet" href="style.css">
+  <script async src="https://docs.opencv.org/4.8.0/opencv.js"></script>
 </head>
 <body>
-    <main>
-        <h1>Analog → Digital Clock Reader</h1>
+  <main>
+    <h1>Analog → Digital Clock Reader</h1>
 
-        <div class="controls">
-            <video id="video" autoplay playsinline></video>
-            <canvas id="canvas" style="display:none"></canvas>
+    <div class="controls">
+      <video id="video" autoplay playsinline></video>
 
-            <div class="buttons">
-                <button id="startCam">Start Camera</button>
-                <button id="capture">Capture Photo</button>
-                <input id="fileInput" type="file" accept="image/*">
-            </div>
-        </div>
+      <!-- hidden processing canvas -->
+      <canvas id="procCanvas" style="display:none"></canvas>
 
-        <div class="preview">
-            <img id="previewImg" alt="preview">
-        </div>
+      <div class="buttons">
+        <button id="startCam">Start Camera</button>
+        <button id="capture">Capture Photo</button>
+        <input id="fileInput" type="file" accept="image/*">
+      </div>
+    </div>
 
-        <div class="result">
-            <h2>Detected Time</h2>
-            <div id="timeOutput">—</div>
-            <div id="debugMsg" class="debug"></div>
-        </div>
-    </main>
+    <div class="preview">
+      <!-- preview image shown to user -->
+      <canvas id="previewCanvas"></canvas>
+      <!-- overlay canvas will draw detection lines -->
+      <canvas id="overlayCanvas" class="overlay"></canvas>
+    </div>
 
-    <script src="script.js"></script>
+    <div class="result">
+      <h2>Detected Time</h2>
+      <div id="timeOutput">—</div>
+      <div id="debugMsg" class="debug"></div>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
 </body>
 </html>
