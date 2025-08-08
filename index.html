@@ -1,43 +1,23 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Analog → Digital Clock Reader (Frontend-only)</title>
-  <link rel="stylesheet" href="style.css">
-  <script async src="https://docs.opencv.org/4.8.0/opencv.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital to Analog Clock</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <main>
-    <h1>Analog → Digital Clock Reader</h1>
 
-    <div class="controls">
-      <video id="video" autoplay playsinline></video>
+<header>🕒 Digital → Analog Clock Converter</header>
 
-      <!-- hidden processing canvas -->
-      <canvas id="procCanvas" style="display:none"></canvas>
+<div class="container">
+    <label for="timeInput">Enter Time (HH:MM):</label>
+    <input type="time" id="timeInput">
+    <button id="generateBtn">Generate Analog Clock</button>
 
-      <div class="buttons">
-        <button id="startCam">Start Camera</button>
-        <button id="capture">Capture Photo</button>
-        <input id="fileInput" type="file" accept="image/*">
-      </div>
-    </div>
+    <canvas id="analogClock" width="300" height="300"></canvas>
+</div>
 
-    <div class="preview">
-      <!-- preview image shown to user -->
-      <canvas id="previewCanvas"></canvas>
-      <!-- overlay canvas will draw detection lines -->
-      <canvas id="overlayCanvas" class="overlay"></canvas>
-    </div>
-
-    <div class="result">
-      <h2>Detected Time</h2>
-      <div id="timeOutput">—</div>
-      <div id="debugMsg" class="debug"></div>
-    </div>
-  </main>
-
-  <script src="script.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
